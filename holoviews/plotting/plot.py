@@ -641,14 +641,14 @@ class GenericElementPlot(DimensionedPlot):
     xaxis = param.ObjectSelector(default='bottom',
                                  objects=['top', 'bottom', 'bare', 'top-bare',
                                           'bottom-bare', None, True, False], doc="""
-        Whether and where to display the xaxis. 
-        The "bare" options allow suppressing all axis labels, including ticks and xlabel. 
+        Whether and where to display the xaxis.
+        The "bare" options allow suppressing all axis labels, including ticks and xlabel.
         Valid options are 'top', 'bottom', 'bare', 'top-bare' and 'bottom-bare'.""")
 
     yaxis = param.ObjectSelector(default='left',
                                       objects=['left', 'right', 'bare', 'left-bare',
                                                'right-bare', None, True, False], doc="""
-        Whether and where to display the yaxis. 
+        Whether and where to display the yaxis.
         The "bare" options allow suppressing all axis labels, including ticks and ylabel.
         Valid options are 'left', 'right', 'bare', 'left-bare' and 'right-bare'.""")
 
@@ -659,7 +659,7 @@ class GenericElementPlot(DimensionedPlot):
     ylim = param.NumericTuple(default=(np.nan, np.nan), length=2, doc="""
        User-specified x-axis range limits for the plot, as a tuple (low,high).
        If specified, takes precedence over data and dimension ranges.""")
-    
+
     zlim = param.NumericTuple(default=(np.nan, np.nan), length=2, doc="""
        User-specified z-axis range limits for the plot, as a tuple (low,high).
        If specified, takes precedence over data and dimension ranges.""")
@@ -864,9 +864,9 @@ class GenericElementPlot(DimensionedPlot):
                 yspan = y1-y0 if util.is_number(y0) and util.is_number(y1) else None
                 aspect = self.get_aspect(xspan, yspan)
                 if aspect > 1:
-                    xpad = xpad/aspect
+                    xpad = tuple(xp/aspect for xp in xpad) if isinstance(xpad, tuple) else xpad/aspect
                 else:
-                    ypad = ypad*aspect
+                    ypad = tuple(yp*aspect for yp in ypad) if isinstance(ypad, tuple) else ypad*aspect
 
             if range_type == 'combined':
                 x0, x1 = util.dimension_range(x0, x1, xhrange, xsrange, xpad, self.logx)
@@ -1264,9 +1264,9 @@ class GenericOverlayPlot(GenericElementPlot):
         aspect = self.get_aspect(xspan, yspan)
         xpad, ypad, zpad = get_axis_padding(padding)
         if aspect > 1:
-            xpad = xpad/aspect
+            xpad = tuple(xp/aspect for xp in xpad) if isinstance(xpad, tuple) else xpad/aspect
         else:
-            ypad = ypad*aspect
+            ypad = tuple(yp*aspect for yp in ypad) if isinstance(ypad, tuple) else ypad*aspect
         xspan, yspan, zspan = (v/2. for v in get_axis_padding(self.default_span))
         if util.is_number(x0) and x0 == x1: x0, x1 = x0-xspan, x1+xspan
         if util.is_number(x0) and y0 == y1: y0, y1 = y0-yspan, y1+yspan
